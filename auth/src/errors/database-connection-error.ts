@@ -7,7 +7,7 @@ export class DatabaseConnectionError extends CustomError {
         super("could not connect to DB")
     }
 
-    serializeErrors(): { errors: { message: string; field?: string }[] } {
+    serializeErrors() {
         return {
             errors: [
                 { message: "could not connect to DB" }
