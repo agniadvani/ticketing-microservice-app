@@ -6,21 +6,12 @@ export const errorHandler = (err: Error, req: express.Request, res: express.Resp
     console.log("Something Went Wrong:", err)
 
     if (err instanceof RequestValidationError) {
-        const formattedError = err.errors.map(error => {
-            if (error.type === "field") {
-                return { message: error.msg, field: error.path }
-            }
-        })
 
-        return res.status(400).send({ errors: formattedError })
+        return res.status(err.statusCode).send(err.serializeError())
     }
 
     if (err instanceof DatabaseConnectionError) {
-        return res.status(500).send({
-            errors: [
-                { message: "could not connect to database" }
-            ]
-        })
+        return res.status(err.statusCode).send(err.serializeError())
     }
 
     res.status(400).send({
