@@ -8,12 +8,6 @@ export class DatabaseConnectionError extends CustomError {
     }
 
     serializeErrors() {
-        return {
-            errors: [
-                { message: "could not connect to DB" }
-            ]
-        }
+        return [{ message: "could not connect to DB" }]
     }
-
-
 }

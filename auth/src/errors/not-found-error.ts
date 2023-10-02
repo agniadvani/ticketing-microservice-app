@@ -8,7 +8,7 @@ export class NotFoundError extends CustomError {
     }
 
     serializeErrors() {
-        return { errors: [{ message: "Not Found" }] }
+        return [{ message: "Not Found" }]
     }
 
 }
