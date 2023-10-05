@@ -1,7 +1,7 @@
 import request from 'supertest'
 import { app } from '../../app'
 
-it("returns current user in the request object", async () => {
+it("returns 200 on successfull request", async () => {
     const cookie = await global.signup()
     const currentUserResponse = await request(app)
         .get("/api/users/currentuser")
@@ -36,4 +36,12 @@ it("current user's email and id should be equal to signed up user's email and id
         .expect(200)
     expect(currentUserResponse.body.currentUser.email).toEqual(signupResponse.body.email)
     expect(currentUserResponse.body.currentUser.id).toEqual(signupResponse.body.id)
+})
+
+it("returns null in the current user property if no user is logged in", async () => {
+    const response = await request(app)
+        .get("/api/users/currentuser")
+        .expect(200)
+
+    expect(response.body.currentUser).toBeNull()
 })
