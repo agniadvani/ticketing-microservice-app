@@ -19,10 +19,8 @@ router.post("/api/users/signin", [
 ], validateRequest, async (req: express.Request, res: express.Response) => {
     const { email, password } = req.body
     const existingUser = await User.findOne({ email: email })
-    if (!existingUser) {
-        throw new BadRequestError("Invalid Credentials")
-    }
-    if (!Password.comparePasswords(existingUser.password, password)) {
+
+    if (!existingUser || !Password.comparePasswords(existingUser.password, password)) {
         throw new BadRequestError("Invalid Credentials")
     }
     const userJwt = jwt.sign({
