@@ -49,14 +49,7 @@ it("returns 400 if email or password are incorrect", async () => {
 
 it("returns 200 on a successful signin", async () => {
 
-    await request(app)
-        .post("/api/users/signup")
-        .send({
-            email: "test@test.com",
-            password: "password@123"
-        })
-        .expect(201)
-
+    const cookie = await global.signup()
     await request(app)
         .post("/api/users/signin")
         .send({

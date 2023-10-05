@@ -2,16 +2,7 @@ import request from 'supertest'
 import { app } from '../../app'
 
 it("returns current user in the request object", async () => {
-    const signupResponse = await request(app)
-        .post("/api/users/signup")
-        .send({
-            email: "test@test.com",
-            password: "password@123"
-        })
-        .expect(201)
-
-    const cookie = signupResponse.get('Set-Cookie')
-
+    const cookie = await global.signup()
     const currentUserResponse = await request(app)
         .get("/api/users/currentuser")
         .set('Cookie', cookie)
@@ -19,16 +10,7 @@ it("returns current user in the request object", async () => {
 })
 
 it("should return an email and id properties in response body", async () => {
-    const signupResponse = await request(app)
-        .post("/api/users/signup")
-        .send({
-            email: "test@test.com",
-            password: "password@123"
-        })
-        .expect(201)
-
-    const cookie = signupResponse.get('Set-Cookie')
-
+    const cookie = await global.signup()
     const currentUserResponse = await request(app)
         .get("/api/users/currentuser")
         .set('Cookie', cookie)

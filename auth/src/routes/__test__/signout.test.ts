@@ -3,22 +3,7 @@ import { app } from "../../app"
 
 it("cookie should not be present on response header after signout", async () => {
 
-    await request(app)
-        .post("/api/users/signup")
-        .send({
-            email: "test@test.com",
-            password: "password@123"
-        })
-        .expect(201)
-
-    await request(app)
-        .post("/api/users/signin")
-        .send({
-            email: "test@test.com",
-            password: "password@123"
-        })
-        .expect(200)
-
+    const cookie = await global.signup()
 
     const response = await request(app)
         .post("/api/users/signout")

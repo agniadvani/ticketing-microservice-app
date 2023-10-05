@@ -1,7 +1,16 @@
 import { MongoMemoryServer } from 'mongodb-memory-server'
 import mongoose from 'mongoose'
+import request from 'supertest'
+import { app } from '../app'
 
 let mongo: MongoMemoryServer
+
+// Declare a global function in test environment for signing up a user and recieving a cookie
+
+declare global {
+    var signup: () => Promise<string[]>;
+}
+
 
 // At the start of the test program create mongodb memory server and connect to it using mongoose
 beforeAll(async () => {
@@ -30,3 +39,16 @@ afterAll(async () => {
     await mongoose.connection.close()
 })
 
+global.signup = async () => {
+    const response = await request(app)
+        .post("/api/users/signup")
+        .send({
+            email: "test@test.com",
+            password: "password@123"
+        })
+        .expect(201)
+
+    const cookie = response.get("Set-Cookie")
+
+    return cookie
+}
