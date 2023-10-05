@@ -16,6 +16,8 @@ beforeEach(async () => {
     for (const collection of collections) {
         await collection.deleteMany({})
     }
+
+    process.env.JWT_KEY = "JWT_KEY"
 })
 
 

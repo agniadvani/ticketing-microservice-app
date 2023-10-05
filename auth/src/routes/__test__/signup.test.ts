@@ -2,7 +2,7 @@ import request from 'supertest'
 import { app } from "../../app";
 
 it("returns 201 status code on successfull sign up", async () => {
-    process.env.JWT_KEY = "JWT_KEY"
+
     return request(app)
         .post("/api/users/signup")
         .send({
