@@ -15,3 +15,11 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    - image: agniadvani/client
+      context: client
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "**/*.ts"
+            dest: .
