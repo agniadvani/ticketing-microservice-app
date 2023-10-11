@@ -11,8 +11,8 @@ router.post("/api/tickets", requireAuth, [
         .withMessage("title is mandatory"),
 
     body('price')
-        .notEmpty()
-        .withMessage("price is mandatory")
+        .isFloat({ gt: 0 })
+        .withMessage("price should be greater than 0")
 ], validateRequest, async (req: express.Request, res: express.Response) => {
 
     res.status(201).send({})

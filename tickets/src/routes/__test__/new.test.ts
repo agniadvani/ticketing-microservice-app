@@ -30,7 +30,13 @@ it("returns an error if an invalid title is provided", async () => {
     await Request(app)
         .post("/api/tickets")
         .set("Cookie", signup())
-        .send({ price: "2000" })
+        .send({ title: "", price: "2000" })
+        .expect(400)
+
+    await Request(app)
+        .post("/api/tickets")
+        .set("Cookie", signup())
+        .send({ price: 2000 })
         .expect(400)
 })
 
@@ -40,12 +46,18 @@ it("returns an error if an invalid price is provided", async () => {
         .set("Cookie", signup())
         .send({ title: "Test Title" })
         .expect(400)
+
+    await Request(app)
+        .post("/api/tickets")
+        .set("Cookie", signup())
+        .send({ title: "Test Title", price: -2000 })
+        .expect(400)
 })
 
 it("creates a ticket with valid inputs", async () => {
     await Request(app)
         .post("/api/tickets")
         .set("Cookie", signup())
-        .send({ title: "Test Title", price: "2000" })
+        .send({ title: "Test Title", price: 2000 })
         .expect(201)
 })
