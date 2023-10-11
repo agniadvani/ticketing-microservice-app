@@ -3,6 +3,7 @@ import cookieSession from "cookie-session"
 import express from "express"
 import "express-async-errors"
 import { newTicketRouter } from "./routes/new"
+import { showTicketRouter } from './routes/show'
 
 const app = express()
 app.set('trust proxy', true)
@@ -15,6 +16,7 @@ app.use(cookieSession({
 app.use(currentUser)
 
 app.use(newTicketRouter)
+app.use(showTicketRouter)
 
 app.all("*", async (req, res) => {
     throw new NotFoundError()

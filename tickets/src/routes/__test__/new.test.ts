@@ -1,4 +1,5 @@
 import Request from 'supertest'
+import { Ticket } from '../../../models/ticket'
 import { app } from '../../app'
 
 it("has a route handler listening to /api/tickets for post requests", async () => {
@@ -55,9 +56,18 @@ it("returns an error if an invalid price is provided", async () => {
 })
 
 it("creates a ticket with valid inputs", async () => {
+    let tickets = await Ticket.find({})
+    expect(tickets.length).toEqual(0)
+
+    const title = "Test Title"
     await Request(app)
         .post("/api/tickets")
         .set("Cookie", signup())
-        .send({ title: "Test Title", price: 2000 })
+        .send({ title, price: 2000 })
         .expect(201)
+
+    tickets = await Ticket.find({})
+    expect(tickets.length).toEqual(1)
+    expect(tickets[0].price).toEqual(2000)
+    expect(tickets[0].title).toEqual(title)
 })

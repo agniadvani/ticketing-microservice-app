@@ -1,6 +1,7 @@
 import { requireAuth, validateRequest } from '@aggitix/common'
 import express from 'express'
 import { body } from 'express-validator'
+import { Ticket } from '../../models/ticket'
 
 const router = express.Router()
 
@@ -15,7 +16,17 @@ router.post("/api/tickets", requireAuth, [
         .withMessage("price should be greater than 0")
 ], validateRequest, async (req: express.Request, res: express.Response) => {
 
-    res.status(201).send({})
+    const { title, price } = req.body
+
+    const ticket = Ticket.build({
+        title: title,
+        price: price,
+        userId: req.currentUser!.id
+    })
+
+    await ticket.save()
+
+    res.status(201).send(ticket)
 })
 
 export { router as newTicketRouter }
