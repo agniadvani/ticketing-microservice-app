@@ -7,6 +7,7 @@ build:
   local:
     push: false
   artifacts:
+    # Auth
     - image: agniadvani/auth
       context: auth
       docker:
@@ -15,6 +16,7 @@ build:
         manual:
           - src: "src/**/*.ts"
             dest: .
+    # Client
     - image: agniadvani/client
       context: client
       docker:
@@ -22,4 +24,13 @@ build:
       sync:
         manual:
           - src: "**/*.ts"
+            dest: .
+    # Tickets
+    - image: agniadvani/tickets
+      context: tickets
+      docker:
+        dockerfile: Dockerfile
+      sync:
+        manual:
+          - src: "src/**/*.ts"
             dest: .
