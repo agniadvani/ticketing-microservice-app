@@ -2,8 +2,7 @@ import express from 'express'
 import { body } from 'express-validator'
 import jwt from 'jsonwebtoken'
 import { User } from '../models/user'
-import { BadRequestError } from '../errors/bad-request-error'
-import { validateRequest } from '../middlewares/validate-request'
+import { validateRequest, BadRequestError } from '@aggitix/common'
 
 const router = express.Router()
 

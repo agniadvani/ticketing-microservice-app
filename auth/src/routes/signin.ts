@@ -1,8 +1,7 @@
 import express from 'express'
 import { body } from 'express-validator'
-import { BadRequestError } from '../errors/bad-request-error'
 import { User } from '../models/user'
-import { validateRequest } from '../middlewares/validate-request'
+import { validateRequest, BadRequestError } from '@aggitix/common'
 import { Password } from '../services/password'
 import jwt from "jsonwebtoken"
 
