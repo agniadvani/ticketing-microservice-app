@@ -1,5 +1,5 @@
-import express from 'express'
-import jwt from 'jsonwebtoken'
+import express from 'express';
+import jwt from 'jsonwebtoken';
 
 interface UserPayload {
     email: string;
@@ -24,6 +24,5 @@ export const currentUser = (req: express.Request, res: express.Response, next: e
         next()
     } catch (err) {
         return next()
-
     }
 }

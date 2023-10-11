@@ -1,14 +1,13 @@
-import { MongoMemoryServer } from 'mongodb-memory-server'
-import mongoose from 'mongoose'
-import request from 'supertest'
-import { app } from '../app'
+import jwt from 'jsonwebtoken';
+import { MongoMemoryServer } from 'mongodb-memory-server';
+import mongoose from 'mongoose';
 
 let mongo: MongoMemoryServer
 
 // Declare a global function in test environment for signing up a user and recieving a cookie
 
 declare global {
-    var signup: () => Promise<string[]>;
+    var signup: () => string[];
 }
 
 
@@ -39,16 +38,14 @@ afterAll(async () => {
     await mongoose.connection.close()
 })
 
-global.signup = async () => {
-    const response = await request(app)
-        .post("/api/users/signup")
-        .send({
-            email: "test@test.com",
-            password: "password@123"
-        })
-        .expect(201)
-
-    const cookie = response.get("Set-Cookie")
-
-    return cookie
+global.signup = () => {
+    const email = "test@test.com"
+    const id = "64f6d09711bf3a80ba9443ea"
+    const token = jwt.sign({
+        id: id,
+        email: email
+    }, process.env.JWT_KEY!)
+    const sessionObj = JSON.stringify({ jwt: token })
+    const base64SessionObj = Buffer.from(sessionObj).toString("base64")
+    return [`session=${base64SessionObj}`]
 }
