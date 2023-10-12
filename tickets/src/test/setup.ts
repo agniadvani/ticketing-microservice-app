@@ -7,7 +7,7 @@ let mongo: MongoMemoryServer
 // Declare a global function in test environment for signing up a user and recieving a cookie
 
 declare global {
-    var signup: () => string[];
+    var signup: (emailId?: string, userId?: string) => string[];
 }
 
 
@@ -38,9 +38,9 @@ afterAll(async () => {
     await mongoose.connection.close()
 })
 
-global.signup = () => {
-    const email = "test@test.com"
-    const id = "64f6d09711bf3a80ba9443ea"
+global.signup = (emailId?: string, userId?: string) => {
+    const email = emailId || "test@test.com"
+    const id = userId || "64f6d09711bf3a80ba9443ea"
     const token = jwt.sign({
         id: id,
         email: email
