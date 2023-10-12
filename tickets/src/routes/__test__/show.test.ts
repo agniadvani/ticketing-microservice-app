@@ -1,9 +1,11 @@
+import mongoose from 'mongoose'
 import request from 'supertest'
 import { app } from '../../app'
 
 it("should return not found in case the id is invalid", async () => {
+    const id = new mongoose.Types.ObjectId().toHexString()
     await request(app)
-        .get("/api/tickets/asdflkasflkajfl")
+        .get("/api/tickets/" + id)
         .expect(404)
 })
 
