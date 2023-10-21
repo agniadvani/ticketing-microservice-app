@@ -15,17 +15,57 @@ stan.on('connect', () => {
         process.exit()
     })
 
-    const options = stan.subscriptionOptions().setManualAckMode(true)
-
-    const subscription = stan.subscribe("ticket:created", 'listen-service-queue-group', options)
-
-    subscription.on('message', (msg: nats.Message) => {
-        if (typeof msg.getData() === "string") {
-            console.log(`Recieved event #${msg.getSequence()}, with data: ${msg.getData()}`)
-        }
-        msg.ack()
-    })
+    new TicketCreatedListener(stan).listen()
 })
 
 process.on('SIGINT', () => { stan.close() })
 process.on('SIGTERM', () => { stan.close() })
+
+abstract class Listener {
+    abstract subject: string;
+    abstract queueGroupName: string;
+    abstract onMessage(data: any, msg: nats.Message): void
+
+    protected ackWait = 5 * 1000;
+    private client: nats.Stan;
+
+    constructor(client: nats.Stan) {
+        this.client = client
+    }
+
+    subscriptionOptions() {
+        return this.client.subscriptionOptions()
+            .setManualAckMode(true)
+            .setDeliverAllAvailable()
+            .setDurableName(this.queueGroupName)
+            .setAckWait(this.ackWait)
+    }
+
+    listen() {
+        const subscription = this.client.subscribe(
+            this.subject, this.queueGroupName, this.subscriptionOptions()
+        )
+
+        subscription.on('message', (msg) => {
+            console.log(`Message Recieved: ${this.subject} / ${this.queueGroupName}`)
+            const data = this.parseMessage(msg)
+            this.onMessage(data, msg)
+        })
+    }
+
+    parseMessage(msg: nats.Message): string {
+        const data = msg.getData()
+        return typeof data === "string" ?
+            JSON.parse(data) : JSON.parse(data.toString('utf-8'))
+    }
+}
+
+
+class TicketCreatedListener extends Listener {
+    subject = "ticket:created"
+    queueGroupName = "payments-service-queue-group"
+    onMessage(data: any, msg: nats.Message): void {
+        console.log("Data Recieved:", data)
+        msg.ack()
+    }
+}
