@@ -1,7 +1,5 @@
+import { Listener, Subjects, TicketCreatedEvent } from '@aggitix/common'
 import nats from 'node-nats-streaming'
-import { Listener } from '../../../common/src/events/base-listener'
-import { Subjects } from '../../../common/src/events/subjects'
-import { TicketCreatedEvent } from '../../../common/src/events/ticket-created-event'
 
 export class TicketCreatedListener extends Listener<TicketCreatedEvent> {
     subject: Subjects.TicketCreated = Subjects.TicketCreated
