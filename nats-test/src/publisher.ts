@@ -27,8 +27,6 @@ stan.on('connect', async () => {
     } catch (err) {
         console.log(err)
     }
-
-
 })
 
 process.on('SIGINT', () => { stan.close() })
