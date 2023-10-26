@@ -2,6 +2,9 @@ import jwt from 'jsonwebtoken';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 
+// Intercept file imports to a fake file using jest mock feature
+jest.mock('../nats-wrapper.ts')
+
 let mongo: MongoMemoryServer
 
 // Declare a global function in test environment for signing up a user and recieving a cookie
