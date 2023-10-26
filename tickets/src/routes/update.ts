@@ -1,4 +1,4 @@
-import { NotAuthorizedError, NotFoundError, currentUser, requireAuth, validateRequest } from '@aggitix/common'
+import { NotAuthorizedError, NotFoundError, requireAuth, validateRequest } from '@aggitix/common'
 import express from 'express'
 import { body } from 'express-validator'
 import { Ticket } from '../../models/ticket'
@@ -6,7 +6,7 @@ import { TicketUpdatedPublisher } from '../events/publishers/ticket-updated-publ
 import { natsWrapper } from '../nats-wrapper'
 const router = express.Router()
 
-router.put("/api/tickets/:id", currentUser, requireAuth, [
+router.put("/api/tickets/:id", requireAuth, [
     body("title")
         .notEmpty()
         .isLength({ min: 3 })
