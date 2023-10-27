@@ -28,6 +28,8 @@ beforeEach(async () => {
         await collection.deleteMany({})
     }
 
+    jest.clearAllMocks()
+
     process.env.JWT_KEY = "JWT_KEY"
 })
 

@@ -1,8 +1,7 @@
 import mongoose from 'mongoose'
 import request from 'supertest'
 import { app } from '../../app'
-
-
+import { natsWrapper } from '../../nats-wrapper'
 
 it("should return 401 if the user is not authenticated", async () => {
     const id = new mongoose.Types.ObjectId().toHexString()
@@ -92,3 +91,27 @@ it("should return 200 if title and price are valid and the user is authenticated
 })
 
 
+it("should publish an event", async () => {
+    const cookie = signup()
+    const title = "Updated Title"
+    const price = 2500
+    const response = await request(app)
+        .post("/api/tickets")
+        .send({
+            title: "Test Title",
+            price: 2000
+        })
+        .set("Cookie", cookie)
+        .expect(201)
+
+    const updateResponse = await request(app)
+        .put(`/api/tickets/${response.body.id}`)
+        .send({
+            title: title,
+            price: price
+        })
+        .set("Cookie", cookie)
+        .expect(200)
+
+    expect(natsWrapper.client.publish).toBeCalled()
+})

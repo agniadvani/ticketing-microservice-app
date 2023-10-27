@@ -16,6 +16,14 @@ spec:
         - name: tickets
           image: agniadvani/tickets
           env:
+            - name: CLUSTER_ID
+              value: ticketing
+            - name: NATS_URL
+              value: "http://nats-srv:4222"
+            - name: CLIENT_ID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
             - name: MONGO_URI
               value: "mongodb://tickets-mongo-srv:27017"
             - name: JWT_KEY

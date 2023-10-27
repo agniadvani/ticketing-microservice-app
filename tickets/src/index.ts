@@ -10,9 +10,19 @@ const start = async () => {
     if (!process.env.MONGO_URI) {
         throw new Error("MONGO_URI must be defined")
     }
+    if (!process.env.CLUSTER_ID) {
+        throw new Error("CLUSTER_ID must be defined")
+    }
+    if (!process.env.CLIENT_ID) {
+        throw new Error("CLIENT_ID must be defined")
+    }
+    if (!process.env.NATS_URL) {
+        throw new Error("NATS_URL must be defined")
+    }
+
 
     try {
-        await natsWrapper.connect("ticketing", "alkdssal", "http://nats-srv:4222")
+        await natsWrapper.connect(process.env.CLUSTER_ID, process.env.CLIENT_ID, process.env.NATS_URL)
         natsWrapper.client.on('close', () => {
             console.log("NATS connection closed!")
             process.exit()
