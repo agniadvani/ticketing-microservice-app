@@ -28,7 +28,16 @@ spec:
                 port:
                   number: 3000
 
-          # Client
+          # Orders
+          - path: /api/orders
+            pathType: Prefix
+            backend:
+              service:
+                name: orders-srv
+                port:
+                  number: 3000
+
+          # Client(should be last)
           - path: /
             pathType: Prefix
             backend:
