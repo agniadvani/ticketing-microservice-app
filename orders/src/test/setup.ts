@@ -1,6 +1,10 @@
 import jwt from 'jsonwebtoken';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
+import request from "supertest";
+import { app } from '../app';
+import { OrderDoc } from '../models/order';
+import { Ticket, TicketDoc } from '../models/ticket';
 
 // Intercept file imports to a fake file using jest mock feature
 jest.mock('../nats-wrapper.ts')
@@ -11,6 +15,8 @@ let mongo: MongoMemoryServer
 
 declare global {
     var signup: (emailId?: string, userId?: string) => string[];
+    var buildTicket: () => Promise<TicketDoc>;
+    var createOrder: (ticketId: string, user: string[]) => Promise<OrderDoc>
 }
 
 
@@ -53,4 +59,23 @@ global.signup = (emailId?: string, userId?: string) => {
     const sessionObj = JSON.stringify({ jwt: token })
     const base64SessionObj = Buffer.from(sessionObj).toString("base64")
     return [`session=${base64SessionObj}`]
+}
+
+global.buildTicket = async (): Promise<TicketDoc> => {
+    const ticket = Ticket.build({
+        title: "test_ticket",
+        price: 2000
+    })
+    await ticket.save()
+    return ticket
+}
+
+global.createOrder = async (ticketId: string, user: string[]): Promise<OrderDoc> => {
+    const response = await request(app)
+        .post("/api/orders")
+        .set("Cookie", user)
+        .send({ ticketId: ticketId })
+        .expect(201)
+
+    return response.body as OrderDoc
 }
