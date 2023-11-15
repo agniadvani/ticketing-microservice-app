@@ -2,6 +2,7 @@ import request from "supertest"
 import { app } from "../../app"
 import mongoose from "mongoose"
 import { OrderStatus } from "@aggitix/common"
+import { natsWrapper } from "../../nats-wrapper"
 
 it("returns 401 if user is not logged in", () => {
     const orderId = new mongoose.Types.ObjectId()
@@ -47,4 +48,15 @@ it("returns 204 with successful response", async () => {
     expect(deletedOrder.status).toEqual(OrderStatus.Cancelled)
 })
 
-it.todo("emits a order cancelled event")
+it("emits a order cancelled event", async () => {
+    const user = global.signup()
+    const ticket = await global.buildTicket()
+    const order = await global.createOrder(ticket.id, user)
+
+    await request(app)
+        .delete("/api/orders/" + order.id)
+        .set("Cookie", user)
+        .expect(200)
+
+    expect(natsWrapper.client.publish).toHaveBeenCalled()
+})
