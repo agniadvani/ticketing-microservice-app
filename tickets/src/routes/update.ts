@@ -41,7 +41,8 @@ router.put("/api/tickets/:id", requireAuth, [
         id: updatedTicket.id,
         price: updatedTicket.price,
         title: updatedTicket.title,
-        userId: updatedTicket.userId
+        userId: updatedTicket.userId,
+        version: updatedTicket.version
     })
 
     res.send(updatedTicket)
