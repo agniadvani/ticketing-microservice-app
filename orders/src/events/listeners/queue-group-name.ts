@@ -1,1 +1,1 @@
-export const QUEUE_GROUP_NAME = "orders-created"
+export const QUEUE_GROUP_NAME = "orders-srv"

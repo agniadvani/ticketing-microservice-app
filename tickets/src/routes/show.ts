@@ -1,7 +1,7 @@
 import { NotFoundError } from '@aggitix/common'
 import express from 'express'
 import { isValidObjectId } from 'mongoose'
-import { Ticket } from '../../models/ticket'
+import { Ticket } from '../models/ticket'
 
 const router = express.Router()
 

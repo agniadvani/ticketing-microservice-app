@@ -1,5 +1,5 @@
 import Request from 'supertest'
-import { Ticket } from '../../../models/ticket'
+import { Ticket } from '../../models/ticket'
 import { app } from '../../app'
 import { natsWrapper } from '../../nats-wrapper'
 
