@@ -28,24 +28,17 @@ router.put("/api/tickets/:id", requireAuth, [
     if (currentUser!.id !== ticket!.userId) {
         throw new NotAuthorizedError()
     }
-    const updatedTicket = await Ticket.findByIdAndUpdate(id, {
-        title: title,
-        price: price
-    }, { new: true })
-
-    if (!updatedTicket) {
-        throw new NotFoundError()
-    }
-
+    ticket.set({ title, price })
+    await ticket.save()
     await new TicketUpdatedPublisher(natsWrapper.client).publish({
-        id: updatedTicket.id,
-        price: updatedTicket.price,
-        title: updatedTicket.title,
-        userId: updatedTicket.userId,
-        version: updatedTicket.version
+        id: ticket.id,
+        price: ticket.price,
+        title: ticket.title,
+        userId: ticket.userId,
+        version: ticket.version
     })
 
-    res.send(updatedTicket)
+    res.send(ticket)
 })
 
 export { router as updateTicketRouter }
