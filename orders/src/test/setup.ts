@@ -63,6 +63,7 @@ global.signup = (emailId?: string, userId?: string) => {
 
 global.buildTicket = async (): Promise<TicketDoc> => {
     const ticket = Ticket.build({
+        id: new mongoose.Types.ObjectId().toHexString(),
         title: "test_ticket",
         price: 2000
     })
