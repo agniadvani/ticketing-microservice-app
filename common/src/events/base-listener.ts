@@ -12,7 +12,7 @@ export abstract class Listener<T extends Event> {
     abstract onMessage(data: T['data'], msg: nats.Message): void
 
     protected ackWait = 5 * 1000;
-    private client: nats.Stan;
+    protected client: nats.Stan;
 
     constructor(client: nats.Stan) {
         this.client = client
