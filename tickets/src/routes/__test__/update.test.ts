@@ -2,6 +2,7 @@ import mongoose from 'mongoose'
 import request from 'supertest'
 import { app } from '../../app'
 import { natsWrapper } from '../../nats-wrapper'
+import { Ticket } from '../../models/ticket'
 
 it("should return 401 if the user is not authenticated", async () => {
     const id = new mongoose.Types.ObjectId().toHexString()
@@ -114,4 +115,32 @@ it("should publish an event", async () => {
         .expect(200)
 
     expect(natsWrapper.client.publish).toBeCalled()
+})
+
+it("should not update the ticket if it has an orderId", async () => {
+    const cookie = signup()
+    const title = "Updated Title"
+    const price = 2500
+    const response = await request(app)
+        .post("/api/tickets")
+        .send({
+            title: "Test Title",
+            price: 2000
+        })
+        .set("Cookie", cookie)
+        .expect(201)
+
+    const ticket = await Ticket.findById(response.body.id)
+
+    ticket!.set({ orderId: new mongoose.Types.ObjectId().toHexString() })
+    await ticket!.save()
+
+    const updateResponse = await request(app)
+        .put(`/api/tickets/${response.body.id}`)
+        .send({
+            title: title,
+            price: price
+        })
+        .set("Cookie", cookie)
+        .expect(400)
 })

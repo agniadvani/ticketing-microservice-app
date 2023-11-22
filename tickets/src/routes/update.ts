@@ -1,4 +1,4 @@
-import { NotAuthorizedError, NotFoundError, requireAuth, validateRequest } from '@aggitix/common'
+import { BadRequestError, NotAuthorizedError, NotFoundError, requireAuth, validateRequest } from '@aggitix/common'
 import express from 'express'
 import { body } from 'express-validator'
 import { Ticket } from '../models/ticket'
@@ -24,6 +24,9 @@ router.put("/api/tickets/:id", requireAuth, [
     const ticket = await Ticket.findById(id)
     if (!ticket) {
         throw new NotFoundError()
+    }
+    if (ticket.orderId) {
+        throw new BadRequestError('could not update the ticket')
     }
     if (currentUser!.id !== ticket!.userId) {
         throw new NotAuthorizedError()
