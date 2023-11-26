@@ -9,6 +9,7 @@ export class OrderCancelledListener extends Listener<OrderCancelledEvent>{
     queueGroupName = QUEUE_GROUP_NAME;
 
     async onMessage(data: OrderCancelledEvent["data"], msg: Message): Promise<void> {
+        const client = this.client
         const ticket = await Ticket.findById(data.ticket.id)
 
         if (!ticket) {
@@ -19,7 +20,7 @@ export class OrderCancelledListener extends Listener<OrderCancelledEvent>{
         ticket.set({ orderId: undefined })
         await ticket.save()
 
-        await new TicketUpdatedPublisher(this.client).publish({
+        await new TicketUpdatedPublisher(client).publish({
             id: ticket.id,
             price: ticket.price,
             title: ticket.title,

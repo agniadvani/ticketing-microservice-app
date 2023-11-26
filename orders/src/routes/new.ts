@@ -27,7 +27,6 @@ router.post("/api/orders", requireAuth, [
         if (!ticket) {
             throw new NotFoundError()
         }
-
         // Check if the ticket is not reserved
         const isReserved = await ticket.isReserved()
 
@@ -52,7 +51,7 @@ router.post("/api/orders", requireAuth, [
 
         // Publish an order created event
 
-        new OrderCreatedPublisher(natsWrapper.client).publish({
+        await new OrderCreatedPublisher(natsWrapper.client).publish({
             id: order.id,
             status: order.status,
             userId: order.userId,
