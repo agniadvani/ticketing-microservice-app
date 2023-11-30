@@ -52,7 +52,8 @@ orderSchema.statics.build = (attrs: OrderAttrs): OrderDoc => {
         _id: attrs.id,
         userId: attrs.userId,
         price: attrs.price,
-        status: attrs.status
+        status: attrs.status,
+        version: attrs.version
     })
 }
 
