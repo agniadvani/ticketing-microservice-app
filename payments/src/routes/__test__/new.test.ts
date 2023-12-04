@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import { Order } from '../../models/order'
 import { OrderStatus } from '@aggitix/common'
 import { stripe } from '../../stripe'
+import { Payment } from '../../models/payment'
 
 
 jest.mock("../../stripe.ts")
@@ -89,4 +90,7 @@ it("should return 201 on successfull charge", async () => {
     expect(chargeOptions.amount).toEqual(order.price * 100)
     expect(chargeOptions.payment_method_types[0]).toEqual('card')
     expect(chargeOptions.description).toEqual(`Charge of Rs. ${order.price} for ticket purchased.`)
+
+    const payment = await Payment.findOne({ orderId: order.id, stripeId: "TEST" })
+    expect(payment).not.toBeNull()
 })

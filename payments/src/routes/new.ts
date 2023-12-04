@@ -3,6 +3,7 @@ import express from "express"
 import { body } from "express-validator"
 import { Order } from "../models/order"
 import { stripe } from "../stripe"
+import { Payment } from "../models/payment"
 
 const router = express.Router()
 
@@ -31,12 +32,20 @@ router.post("/api/payments", requireAuth, [
     }
 
     try {
-        await stripe.paymentIntents.create({
+        const charge = await stripe.paymentIntents.create({
             currency: "INR",
             amount: order.price * 100,
             payment_method_types: ['card'],
             description: `Charge of Rs. ${order.price} for ticket purchased.`
         })
+
+        const payment = Payment.build({
+            orderId,
+            stripeId: charge.id
+        })
+
+        await payment.save()
+
     } catch (err) {
         throw new Error("Payment Unsuccessful")
     }
