@@ -2,6 +2,7 @@ import { currentUser, errorHandler, NotFoundError } from '@aggitix/common'
 import cookieSession from "cookie-session"
 import express from "express"
 import "express-async-errors"
+import { createChargeRouter } from './routes/new'
 
 
 const app = express()
@@ -14,6 +15,7 @@ app.use(cookieSession({
 
 app.use(currentUser)
 
+app.use(createChargeRouter)
 
 app.all("*", async (req, res) => {
     throw new NotFoundError()

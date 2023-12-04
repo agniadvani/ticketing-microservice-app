@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: tickets
-          image: agniadvani/tickets
+          image: us.gcr.io/ticketing-dev-407017/tickets
           env:
             - name: CLUSTER_ID
               value: ticketing
